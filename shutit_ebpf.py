@@ -5,6 +5,7 @@ import logging
 import string
 import os
 import inspect
+import ebpf
 from shutit_module import ShutItModule
 
 class shutit_ebpf(ShutItModule):
@@ -56,7 +57,7 @@ end''')
 		# Set up the sessions
 		shutit_sessions = {}
 		for machine in sorted(machines.keys()):
-			shutit_sessions.update({machine:shutit.create_session('bash')})
+			shutit_sessions.update({machine:shutit.create_session('bash',loglevel='debug')})
 		# Set up and validate landrush
 		for machine in sorted(machines.keys()):
 			shutit_session = shutit_sessions[machine]
@@ -117,9 +118,7 @@ echo "
 
 		for machine in sorted(machines.keys()):
 			shutit_session = shutit_sessions[machine]
-			shutit_session.send('hostname')
-
-
+			ebpf.do_ebpf(shutit_session)
 		return True
 
 
